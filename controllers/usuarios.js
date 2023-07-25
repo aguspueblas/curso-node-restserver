@@ -1,45 +1,61 @@
 const { response, request } = require("express");
 const Usuario = require("../models/usuario");
 
-const bcryptjs = require("bcryptjs");
+const { encryptPassword } = require("../helpers/db-validators");
 
-const usuariosGet = (req = request, res = response) => {
-  const { q, nombre = "No name", apiKey } = req.query;
+const usuariosGet = async (req = request, res = response) => {
+  const { limit = 5, offset = 0 } = req.query;
+
+  const query = { estado: true };
+
+  const [total, usuarios] = await Promise.all([
+    Usuario.countDocuments(query),
+    Usuario.find(query).limit(limit).skip(offset),
+  ]);
 
   res.json({
-    msg: "Get API controller",
-    query: q,
-    nombre: nombre,
-    apiKey: apiKey,
+    total,
+    usuarios,
   });
 };
 
-const usuariosPut = (req, res = response) => {
+const usuariosPut = async (req, res = response) => {
   const id = req.params.id;
-  res.json({
-    msg: "Put API controller",
-    id: id,
+  const { _id, password, google, ...resto } = req.body;
+
+  //TODO:validar contra BD.
+  if (password) {
+    resto.password = encryptPassword(password);
+  }
+
+  const usuarioDB = await Usuario.findByIdAndUpdate(id, resto);
+  res.status(200).json({
+    usuarioDB,
   });
 };
 
 const usuariosPost = async (req, res = response) => {
   //Extraer el body de la peticion.
-  const { nombre, correo, password, rol } = req.body;
+  const { _id, nombre, correo, password, rol } = req.body;
   const usuario = new Usuario({ nombre, correo, password, rol });
 
   //TODO: Encriptar password
-  const salt = bcryptjs.genSaltSync();
-  usuario.password = bcryptjs.hashSync(password, salt);
+  usuario.password = encryptPassword(password);
   await usuario.save();
-  res.json({
-    msg: "Post API controller",
+  res.status(201).json({
     usuario,
   });
 };
 
-const usuariosDelete = (req, res = response) => {
+const usuariosDelete = async (req, res = response) => {
+  const { id } = req.params;
+  console.log(`Iniciando la baja logica del id: ${id}`);
+  const usuario = await Usuario.findByIdAndUpdate(id, {
+    estado: false,
+  });
+  console.log(`Se realizo con exito la baja logica del id: ${id}`);
   res.json({
-    msg: "Delete API controller",
+    usuario,
   });
 };
 

@@ -2,14 +2,21 @@ const express = require("express");
 const cors = require("cors");
 
 const { dbConnection } = require("../database/config");
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUI = require("swagger-ui-express");
+const yaml = require("js-yaml");
+const path = require("path");
+const fs = require("fs");
+
+const mainRoutes = require("../routes/index");
 
 class server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT;
-    this.usuariosPath = "/api/usuarios";
-    //Conectar base de datos
-    this.connectDataBase();
+    this.mainRoutes =
+      //Conectar base de datos
+      this.connectDataBase();
     //Middlewares
     this.middlewares();
     //rutas de mi app
@@ -32,7 +39,7 @@ class server {
   }
 
   routes() {
-    this.app.use(this.usuariosPath, require("../routes/user"));
+    this.app.use("/api", mainRoutes);
   }
 
   listen() {
