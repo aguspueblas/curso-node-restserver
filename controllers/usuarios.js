@@ -56,6 +56,7 @@ const usuariosDelete = async (req, res = response) => {
   console.log(`Se realizo con exito la baja logica del id: ${id}`);
   res.json({
     usuario,
+    usuarioAuht: req.usuario,
   });
 };
 
