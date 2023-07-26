@@ -4,9 +4,8 @@ const cors = require("cors");
 const { dbConnection } = require("../database/config");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUI = require("swagger-ui-express");
-const yaml = require("js-yaml");
-const path = require("path");
-const fs = require("fs");
+
+const infoSwagger = require("../docs/basicInfo");
 
 const mainRoutes = require("../routes/index");
 
@@ -21,6 +20,12 @@ class server {
     this.middlewares();
     //rutas de mi app
     this.routes();
+    this.swagger();
+  }
+
+  swagger() {
+    const specs = swaggerJsDoc(infoSwagger);
+    this.app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
   }
 
   middlewares() {

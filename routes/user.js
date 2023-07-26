@@ -26,7 +26,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/usuarios:
+ * /api/usuario:
  *  get:
  *    summary: Retorna lista de usuarios.
  *    description: Obtener los usuarios.
@@ -36,6 +36,16 @@ const router = Router();
  */
 router.get(`${path}/`, usuariosGet);
 
+/**
+ * @swagger
+ * /api/usuario/:id:
+ *  put:
+ *    summary: Modifica un usuario existente.
+ *    description: Obtener los usuarios.
+ *    responses:
+ *      200:
+ *        description: Respuesta exitosa
+ */
 router.put(
   `${path}/:id`,
   [
@@ -48,6 +58,16 @@ router.put(
   usuariosPut
 );
 
+/**
+ * @swagger
+ * /api/usuario:
+ *  post:
+ *    summary: Crea un usuario existente.
+ *    description: Obtener los usuarios.
+ *    responses:
+ *      200:
+ *        description: Respuesta exitosa
+ */
 router.post(
   `${path}/`,
   [
@@ -60,6 +80,16 @@ router.post(
   usuariosPost
 );
 
+/**
+ * @swagger
+ * /api/usuario:
+ *  delete:
+ *    summary: Crea un usuario existente.
+ *    description: Obtener los usuarios.
+ *    responses:
+ *      200:
+ *        description: Respuesta exitosa
+ */
 router.delete(
   `${path}/:id`,
   [
